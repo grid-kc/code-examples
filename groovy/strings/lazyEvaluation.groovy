@@ -18,5 +18,8 @@ assert 'cow jumped turtle' == betterStr
 // And we can change the reference to what and get what we expect
 what = 'tiny bear'
 assert 'cow jumped tiny bear' == betterStr
+// What Groovy is actually doing here is, instead of
+// giveMeWhat.toString(), it is actually doing
+// giveMeWhat.call().toString() implicitly, because it is "smart"
 
 println "All assertions passed"
