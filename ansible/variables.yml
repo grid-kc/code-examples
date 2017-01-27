@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Do whatever
+    script: /tmp/a.sh
+    register: docker_compose_version
+
+  - name: Print stuff
+    shell: echo "{{ docker_compose_version.stdout }}"
