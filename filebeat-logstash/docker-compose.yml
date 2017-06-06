@@ -1,0 +1,33 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash:
+    image: logstash
+    ports:
+    # Port 5001 is for debugging -- filebeat is on the Docker network, so it
+    # talks to logstash on port 5000
+     - "5001:5000"
+    volumes:
+     - ./pipeline:/usr/share/logstash/pipeline
+    # This should really be in logstash.yml, but I don't know how to mount that
+    # into the container without breaking logstash
+    command: --config.reload.automatic
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+     - elasticsearch
+
+  filebeat:
+    image: filebeat
+    volumes:
+     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+     - ./demo.log:/var/log/demo.log
+    depends_on:
+     - logstash
